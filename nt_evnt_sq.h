@@ -23,4 +23,7 @@ typedef struct vvvv_nt_evnt_sq_init_t {
 
 vvvv_nt_evnt_sq_t *vvvv_nt_evnt_sq_new(const vvvv_nt_evnt_sq_init_t *init);
 
+#define vvvv_nt_evnt_sq_get_evnt_lst(nes,trk,tck) \
+   nes->evnt_lsts[((nes)->n_tcks) * (trk) + (tck)] 
+
 #endif /* NT_EVNT_SQ_H */

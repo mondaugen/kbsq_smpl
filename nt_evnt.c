@@ -60,3 +60,23 @@ static vvvv_err_t vvvv_nt_evnt_get_midi_pckt_lst(vvvv_nt_evnt_t *nev,
     return vvvv_err_NOTIMP;
 #endif
 }
+
+vvvv_nt_evnt_t *
+vvvv_nt_evnt_new(vvvv_nt_evnt_init_t *nei)
+{
+    vvvv_nt_evnt_t *ret;
+    ret = (vvvv_nt_evnt_t*)malloc(sizeof(vvvv_nt_evnt_t));
+    if (!ret) {
+        return NULL;
+    }
+    MMDLList_init((MMDLList*)ret);
+    ret->ts = nei->ts;
+    ret->pch = nei->pch;
+    ret->vel = nei->vel;
+    ret->dur = nei->dur;
+}
+
+void vvvv_nt_evnt_free(vvvv_nt_evnt_t *nev)
+{
+    free(nev);
+}

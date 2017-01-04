@@ -1,8 +1,5 @@
 #include "nt_evnt_sq.h" 
 
-#define vvvv_nt_evnt_sq_get_evnt_lst(nes,trk,tck) \
-   nes->evnt_lsts[((nes)->n_tcks) * (trk) + (tck)] 
-
 vvvv_nt_evnt_sq_t *vvvv_nt_evnt_sq_new(const vvvv_nt_evnt_sq_init_t *init)
 {
     vvvv_nt_evnt_sq_t *ret;
