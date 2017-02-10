@@ -16,4 +16,16 @@ typedef struct vvvv_cmd_q_t {
     vvvv_cmd_t *cmds[];
 } vvvv_cmd_q_t;
 
+vvvv_cmd_q_t *
+vvvv_cmd_q_new(size_t len);
+
+vvvv_cmd_t *
+vvvv_cmd_q_push_cmd(vvvv_cmd_q_t *cmdq, vvvv_cmd_t *cmd);
+
+vvvv_err_t
+vvvv_cmd_q_redo_next_cmd(vvvv_cmd_q_t *cmdq);
+
+vvvv_err_t
+vvvv_cmd_q_undo_cur_cmd(vvvv_cmd_q_t *cmdq);
+
 #endif /* CMD_Q_H */

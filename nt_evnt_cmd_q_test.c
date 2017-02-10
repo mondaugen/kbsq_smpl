@@ -1,3 +1,4 @@
+#include "nt_evnt_sq.h" 
 #include "nt_evnt_cmd.h"
 #include "cmd_q.h"
 
@@ -82,78 +83,70 @@ int vvvv_nt_evnt_cmd_q_test(void)
     E_ALLOC(cmd_q);
     /* Command queue empty, should just say DONE */
     assert(vvvv_cmd_q_redo_next_cmd(cmd_q) == vvvv_err_DONE);
-    assert(vvvv_cmd_q_undo_next_cmd(cmd_q) == vvvv_err_DONE);
-    assert(vvvv_cmd_q_push_cmd(cmd_q,cmds[0]) == NULL);
+    assert(vvvv_cmd_q_undo_cur_cmd(cmd_q) == vvvv_err_DONE);
+    assert(vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[0]) == NULL);
     assert(vvvv_cmd_q_redo_next_cmd(cmd_q) == vvvv_err_NONE);
     /* Check inserted properly */
-    assert(MMDLList_getNext(vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd)
+    assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd)
             == (MMDLList*)cmds[0]->nev);
-    assert(vvvv_cmd_q_push_cmd(cmd_q,cmds[1]) == NULL);
+    assert(vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[1]) == NULL);
     assert(vvvv_cmd_q_redo_next_cmd(cmd_q) == vvvv_err_NONE);
     /* Check inserted properly */
-    assert(MMDLList_getNext(vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd)
+    assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd)
             == (MMDLList*)cmds[1]->nev);
     /* This should be the first command as no more commands will fit */
-    assert(vvvv_cmd_q_push_cmd(cmd_q,cmds[2]) == (vvvv_cmd_t*)cmds[0]);
+    assert(vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[2]) == (vvvv_cmd_t*)cmds[0]);
     assert(vvvv_cmd_q_redo_next_cmd(cmd_q) == vvvv_err_NONE);
     /* Check inserted properly */
-    assert(MMDLList_getNext(
-                    vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd)
+    assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd)
             == (MMDLList*)cmds[2]->nev);
     assert(MMDLList_getNext(
-                MMDLList_getNext(
-                    vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd))
+                MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd))
             == (MMDLList*)cmds[0]->nev);
     /* Undo as many commands as possible */
     vvvv_err_t err;
     do {
-        err = vvvv_cmd_q_undo_next_cmd(cmd_q);
+        err = vvvv_cmd_q_undo_cur_cmd(cmd_q);
     } while (err == vvvv_err_NONE);
     /* The first command's event should be remaining */
-    assert(MMDLList_getNext(
-                    vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd)
+    assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd)
             == (MMDLList*)cmds[0]->nev);
     /* The rest should be NULL */
-    assert(MMDLList_getNext(
-                    vvvv_nt_evnt_sq_get_evnt_lst(nsq,2,1)->lst_hd)
+    assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd)
+            == NULL);
+    assert(MMDLList_getNext(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd))
             == NULL);
     /* Redo as many commands as possible */
     do {
         err = vvvv_cmd_q_redo_next_cmd(cmd_q);
     } while (err == vvvv_err_NONE);
     /* Check inserted properly */
-    assert(MMDLList_getNext(vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd)
-            == (MMDLList*)cmds[0]->nev);
+    assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd)
+            == (MMDLList*)cmds[2]->nev);
     /* Check inserted properly */
-    assert(MMDLList_getNext(vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd)
+    assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd)
             == (MMDLList*)cmds[1]->nev);
     /* Check inserted properly */
     assert(MMDLList_getNext(
-                    vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd)
-            == (MMDLList*)cmds[2]->nev);
-    assert(MMDLList_getNext(
-                MMDLList_getNext(
-                    vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd))
+                MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd))
             == (MMDLList*)cmds[0]->nev);
     /* Undo as many commands as possible */
-    vvvv_err_t err;
     do {
-        err = vvvv_cmd_q_undo_next_cmd(cmd_q);
+        err = vvvv_cmd_q_undo_cur_cmd(cmd_q);
     } while (err == vvvv_err_NONE);
-    assert(vvvv_cmd_q_push_cmd(cmd_q,cmds[3]) == NULL);
+    assert(vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[3]) == NULL);
     assert(vvvv_cmd_q_redo_next_cmd(cmd_q) == vvvv_err_NONE);
     /* Check inserted properly */
-    assert(MMDLList_getNext(vvvv_nt_evnt_sq_get_evnt_lst(nsq,2,4)->lst_hd)
+    assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,2,4)->lst_hd)
             == (MMDLList*)cmds[3]->nev);
-    assert(vvvv_cmd_q_push_cmd(cmd_q,cmds[4]) == NULL);
+    assert(vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[4]) == NULL);
     assert(vvvv_cmd_q_redo_next_cmd(cmd_q) == vvvv_err_NONE);
     /* Check inserted properly */
     assert(MMDLList_getNext(
-                MMDLList_getNext(vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd))
+                MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd))
             == (MMDLList*)cmds[4]->nev);
     return 0;
 }
-
 
 int main (void)
 {

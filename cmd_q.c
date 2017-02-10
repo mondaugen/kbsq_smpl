@@ -1,4 +1,5 @@
 #include "cmd_q.h"
+#include <stdlib.h> 
 
 /* Removes the first command in the queue if it is not NULL.
  * The event is not freed (must be freed by the caller if it wants).
@@ -42,7 +43,7 @@ vvvv_cmd_q_rm_lst_cmd(vvvv_cmd_q_t *cmdq)
  * redo_next_cmd. The first command in the queue is returned.
  */
 vvvv_cmd_t *
-vvvv_cmd_q_push_cmd(vvvv_cmd_q_t *cmdq, const vvvv_cmd_t *cmd)
+vvvv_cmd_q_push_cmd(vvvv_cmd_q_t *cmdq, vvvv_cmd_t *cmd)
 {
     vvvv_cmd_t *tmp_cmd;
     while (cmdq->cur_end_idx != cmdq->lst_dn_idx) {

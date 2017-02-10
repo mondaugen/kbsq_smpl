@@ -21,7 +21,7 @@ static vvvv_err_t nt_evnt_cmd_undo(vvvv_cmd_t *cmd)
     return vvvv_err_NONE;
 }
 
-static void nt_evnt_free(vvvv_cmd_t *cmd)
+static void nt_evnt_cmd_free(vvvv_cmd_t *cmd)
 {
     vvvv_nt_evnt_cmd_t *ncmd = (vvvv_nt_evnt_cmd_t*)cmd;
     if (ncmd->nev) {
@@ -40,7 +40,7 @@ static void vvvv_nt_evnt_cmd_init(vvvv_nt_evnt_cmd_t *ncmd, const vvvv_nt_evnt_c
     }
     vvvv_cmd_t *cmd = (vvvv_cmd_t*)ncmd;
     cmd->v = nt_evnt_cmd_vtab_ptr;
-    cmd->done = vvvv_cmd_done_FALSE;
+    cmd->dn = vvvv_cmd_done_FALSE;
     ncmd->nev = vvvv_nt_evnt_new(&nci->nei);
     ncmd->trk = nci->trk;
     ncmd->nes = nci->nes;

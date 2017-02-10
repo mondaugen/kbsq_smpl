@@ -4,6 +4,8 @@
 #include <stddef.h>
 
 #include "nt_evnt.h" 
+#include "cmd.h" 
+#include "nt_evnt_sq.h" 
 
 typedef struct vvvv_nt_evnt_cmd_t {
     vvvv_cmd_t super;
@@ -17,5 +19,8 @@ typedef struct vvvv_nt_evnt_cmd_init_t {
     vvvv_nt_evnt_sq_t *nes;
     vvvv_nt_evnt_init_t nei;
 } vvvv_nt_evnt_cmd_init_t;
+
+vvvv_nt_evnt_cmd_t *
+vvvv_nt_evnt_cmd_new(const vvvv_nt_evnt_cmd_init_t *nci);
 
 #endif /* NT_EVNT_CMD_H */

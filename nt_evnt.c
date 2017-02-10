@@ -1,10 +1,11 @@
 #include "nt_evnt.h"
+#include <stdlib.h> 
 
 /*
 Pitch simply casted,
 Velocity assumed to be between 0 and 1, and is scaled appropriately.
 */
-vvvv_err_t vvvv_nt_evnt_get_midi_note_on(vvvv_nt_evnt_t *nev,
+static vvvv_err_t vvvv_nt_evnt_get_midi_note_on(vvvv_nt_evnt_t *nev,
                                          vvvv_midi_pckt_t *pckt)
 {
 #ifdef OSX
@@ -42,9 +43,9 @@ static vvvv_err_t vvvv_nt_evnt_get_midi_note_off(vvvv_nt_evnt_t *nev,
 #endif
 } 
 
-static vvvv_err_t vvvv_nt_evnt_get_midi_pckt_lst(vvvv_nt_evnt_t *nev,
-                                                 vvvv_midi_pckt_lst_t *lst,
-                                                 size_t sz)
+vvvv_err_t vvvv_nt_evnt_get_midi_pckt_lst(vvvv_nt_evnt_t *nev,
+                                          vvvv_midi_pckt_lst_t *lst,
+                                          size_t sz)
 {
     if (sz < VVVV_MIDI_PCKT_LST_SZ(2)) {
         return vvvv_err_EINVAL;
@@ -62,7 +63,7 @@ static vvvv_err_t vvvv_nt_evnt_get_midi_pckt_lst(vvvv_nt_evnt_t *nev,
 }
 
 vvvv_nt_evnt_t *
-vvvv_nt_evnt_new(vvvv_nt_evnt_init_t *nei)
+vvvv_nt_evnt_new(const vvvv_nt_evnt_init_t *nei)
 {
     vvvv_nt_evnt_t *ret;
     ret = (vvvv_nt_evnt_t*)malloc(sizeof(vvvv_nt_evnt_t));
@@ -74,6 +75,7 @@ vvvv_nt_evnt_new(vvvv_nt_evnt_init_t *nei)
     ret->pch = nei->pch;
     ret->vel = nei->vel;
     ret->dur = nei->dur;
+    return ret;
 }
 
 void vvvv_nt_evnt_free(vvvv_nt_evnt_t *nev)

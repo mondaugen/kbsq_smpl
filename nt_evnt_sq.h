@@ -3,6 +3,7 @@
 
 #include "nt_evnt_lst.h"
 #include "tmstmp.h"
+#include "nt_evnt.h" 
 
 #include <stdio.h> 
 
@@ -22,8 +23,17 @@ typedef struct vvvv_nt_evnt_sq_init_t {
 } vvvv_nt_evnt_sq_init_t;
 
 vvvv_nt_evnt_sq_t *vvvv_nt_evnt_sq_new(const vvvv_nt_evnt_sq_init_t *init);
+vvvv_err_t vvvv_nt_evnt_sq_insert(vvvv_nt_evnt_sq_t *nes,
+                                  size_t trk,
+                                  vvvv_nt_evnt_t *nev);
 
-#define vvvv_nt_evnt_sq_get_evnt_lst(nes,trk,tck) \
-   nes->evnt_lsts[((nes)->n_tcks) * (trk) + (tck)] 
+static inline vvvv_nt_evnt_lst_t * 
+vvvv_nt_evnt_sq_get_evnt_lst(vvvv_nt_evnt_sq_t *nes, size_t trk, size_t tck)
+{
+    if ((trk < nes->n_trks) && (tck < nes->n_tcks)) {
+        return &nes->evnt_lsts[(((nes)->n_tcks) * (trk)) + (tck)];
+    }
+    return NULL;
+}
 
 #endif /* NT_EVNT_SQ_H */
