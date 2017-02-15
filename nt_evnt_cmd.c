@@ -24,7 +24,8 @@ static vvvv_err_t nt_evnt_cmd_undo(vvvv_cmd_t *cmd)
 static void nt_evnt_cmd_free(vvvv_cmd_t *cmd)
 {
     vvvv_nt_evnt_cmd_t *ncmd = (vvvv_nt_evnt_cmd_t*)cmd;
-    if (ncmd->nev) {
+    /* Only free if event has not been put in sequence */
+    if ((cmd->dn == vvvv_cmd_done_FALSE) && (ncmd->nev != NULL)) {
         vvvv_nt_evnt_free(ncmd->nev);
     }
     free(ncmd);

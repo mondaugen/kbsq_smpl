@@ -62,6 +62,16 @@ vvvv_err_t vvvv_nt_evnt_get_midi_pckt_lst(vvvv_nt_evnt_t *nev,
 #endif
 }
 
+void vvvv_nt_evnt_init(vvvv_nt_evnt_t *nev,
+                       const vvvv_nt_evnt_init_t *nei)
+{
+    MMDLList_init((MMDLList*)nev);
+    nev->ts = nei->ts;
+    nev->pch = nei->pch;
+    nev->vel = nei->vel;
+    nev->dur = nei->dur;
+}
+
 vvvv_nt_evnt_t *
 vvvv_nt_evnt_new(const vvvv_nt_evnt_init_t *nei)
 {
@@ -70,11 +80,7 @@ vvvv_nt_evnt_new(const vvvv_nt_evnt_init_t *nei)
     if (!ret) {
         return NULL;
     }
-    MMDLList_init((MMDLList*)ret);
-    ret->ts = nei->ts;
-    ret->pch = nei->pch;
-    ret->vel = nei->vel;
-    ret->dur = nei->dur;
+    vvvv_nt_evnt_init(ret,nei)
     return ret;
 }
 

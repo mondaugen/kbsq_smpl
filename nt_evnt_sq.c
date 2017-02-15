@@ -1,6 +1,37 @@
 #include "nt_evnt_sq.h" 
 #include "emalloc.h" 
 
+/* Find a note event in the sequence by comparing with fields of cnev.
+ * Returns a pointer to the event if found or NULL if not.
+ */
+vvvv_nt_evnt_t *
+vvvv_nt_evnt_sq_fnd(vvvv_nt_evnt_sq_t *nes,
+                     size_t trk,
+                     vvvv_nt_evnt_t *cnev,
+                     vvvv_nt_evnt_sq_fnd_flgs_t flgs)
+{
+    if (trk >= nes->n_trks) {
+        return NULL;
+    }
+    vvvv_nt_evnt_t *ret;
+    if (flgs == vvvv_nt_evnt_sq_fnd_flgs_TS_PCH) {
+        /* Find based on timestamp and pitch */
+        size_t i = 0;
+        while (i < nes->n_tcks) {
+            /* Halt on slot holding events with cnev's timestamp */
+            if (((i+1) * nes->tick_dur) > cnev->ts) {
+                /* Check if pitch present and timestamp matches */
+                ret = vvvv_nt_evnt_lst_fnd(vvvv_nt_evnt_sq_get_evnt_lst(nes,trk,i),
+                                           cnev,vvvv_nt_evnt_lst_fnd_flgs_PCH_TS);
+                return ret;
+            }
+            i++;
+        }
+    }
+    /* No other flags supported at the moment */
+    return NULL;
+}
+
 vvvv_nt_evnt_sq_t *vvvv_nt_evnt_sq_new(const vvvv_nt_evnt_sq_init_t *init)
 {
     vvvv_nt_evnt_sq_t *ret;
