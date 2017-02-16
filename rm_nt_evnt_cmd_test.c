@@ -80,7 +80,6 @@ int vvvv_rm_nt_evnt_cmd_test(void)
         E_ALLOC(cmds[i]);
     }
     vvvv_rm_nt_evnt_cmd_t *rm_cmds[N_CMDS];
-    size_t i;
     for (i = 0; i < N_CMDS; i++) {
         rm_cmds[i] = vvvv_rm_nt_evnt_cmd_new(&cmd_inits[i]);
         E_ALLOC(rm_cmds[i]);
@@ -91,11 +90,11 @@ int vvvv_rm_nt_evnt_cmd_test(void)
     /* No note should be found, but command should be done */
     vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)rm_cmds[0]);
     vvvv_cmd_q_redo_next_cmd(cmd_q);
-    assert(rm_cmds[0]->dn == vvvv_cmd_done_TRUE);
+    assert(vvvv_cmd_get_dn(rm_cmds[0]) == vvvv_cmd_done_TRUE);
     assert(rm_cmds[0]->fnd_nev == NULL);
     /* Insert first note, then remove */
     vvvv_cmd_q_undo_cur_cmd(cmd_q);
-    assert(rm_cmds[0]->dn == vvvv_cmd_done_FALSE);
+    assert(vvvv_cmd_get_dn(rm_cmds[0]) == vvvv_cmd_done_FALSE);
     {
         vvvv_nt_evnt_t *tmp_nev = cmds[0]->nev;
         vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[0]);
@@ -106,8 +105,8 @@ int vvvv_rm_nt_evnt_cmd_test(void)
         vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)rm_cmds[0]);
         vvvv_cmd_q_redo_next_cmd(cmd_q);
         /* Check that both were done */
-        assert(rm_cmds[0]->dn == vvvv_cmd_done_TRUE);
-        assert(cmds[0]->dn == vvvv_cmd_done_TRUE);
+        assert(vvvv_cmd_get_dn(rm_cmds[0]) == vvvv_cmd_done_TRUE);
+        assert(vvvv_cmd_get_dn(cmds[0]) == vvvv_cmd_done_TRUE);
         /* Check removed event is the one the first command put in */
         assert(rm_cmds[0]->fnd_nev == tmp_nev);
         /* Also check event was actually removed */

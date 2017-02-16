@@ -80,7 +80,7 @@ vvvv_nt_evnt_new(const vvvv_nt_evnt_init_t *nei)
     if (!ret) {
         return NULL;
     }
-    vvvv_nt_evnt_init(ret,nei)
+    vvvv_nt_evnt_init(ret,nei);
     return ret;
 }
 

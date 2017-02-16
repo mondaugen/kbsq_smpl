@@ -14,9 +14,9 @@ static vvvv_err_t rm_nt_evnt_cmd_redo(vvvv_cmd_t *cmd)
                         &rcmd->nev,
                         vvvv_nt_evnt_sq_fnd_flgs_TS_PCH);
     if (rcmd->fnd_nev) {
-        MMDLList_remove((MMDLList*)ncmd->nev);
+        MMDLList_remove((MMDLList*)rcmd->fnd_nev);
         // Set pointers to previous and next to NULL
-        MMDLList_init((MMDLList*)ncmd->nev); 
+        MMDLList_init((MMDLList*)rcmd->fnd_nev); 
     }
     cmd->dn = vvvv_cmd_done_TRUE;
     return vvvv_err_NONE;
@@ -26,11 +26,14 @@ static vvvv_err_t rm_nt_evnt_cmd_redo(vvvv_cmd_t *cmd)
 static vvvv_err_t rm_nt_evnt_cmd_undo(vvvv_cmd_t *cmd)
 {
     vvvv_rm_nt_evnt_cmd_t *rcmd = (vvvv_rm_nt_evnt_cmd_t*)cmd;
-    vvvv_err_t ret;
-    ret = vvvv_nt_evnt_sq_insert(rcmd->nes, rcmd->trk, rcmd->fnd_nev);
+    vvvv_err_t ret = vvvv_err_NONE;
+    /* Only attempt reinsertion if an event was successfully extracted */
+    if (rcmd->fnd_nev) {
+        ret = vvvv_nt_evnt_sq_insert(rcmd->nes, rcmd->trk, rcmd->fnd_nev);
+    }
     if (ret != vvvv_err_NONE) {
         // Problem inserting event, free it (sorry folks, that's all we can do)
-        vvvv_nt_evnt_free(rcmd->fnd_nev)
+        vvvv_nt_evnt_free(rcmd->fnd_nev);
     }
     rcmd->fnd_nev = NULL;
     cmd->dn = vvvv_cmd_done_FALSE;

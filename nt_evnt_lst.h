@@ -16,7 +16,7 @@ typedef enum {
 void vvvv_nt_evnt_lst_init(vvvv_nt_evnt_lst_t *nel);
 vvvv_err_t vvvv_nt_evnt_lst_insert(vvvv_nt_evnt_lst_t *nel,
                                    vvvv_nt_evnt_t *nev);
-vvvv_nt_evnt_t *nev vvvv_nt_evnt_lst_fnd(vvvv_nt_evnt_lst_t *nel,
+vvvv_nt_evnt_t *vvvv_nt_evnt_lst_fnd(vvvv_nt_evnt_lst_t *nel,
                                          vvvv_nt_evnt_t *cnev,
                                          vvvv_nt_evnt_lst_fnd_flgs_t flgs);
 

@@ -25,8 +25,6 @@ struct vvvv_cmd_t {
 #define vvvv_cmd_redo(cmd) ((vvvv_cmd_t*)(cmd))->v->redo((vvvv_cmd_t*)(cmd))
 #define vvvv_cmd_undo(cmd) ((vvvv_cmd_t*)(cmd))->v->undo((vvvv_cmd_t*)(cmd))
 #define vvvv_cmd_free(cmd) ((vvvv_cmd_t*)(cmd))->v->free((vvvv_cmd_t*)(cmd))
-//#define vvvv_cmd_set_redo(cmd,f) do { ((vvvv_cmd_t*)(cmd))->v->redo = f; } while (0)
-//#define vvvv_cmd_set_undo(cmd,f) do { ((vvvv_cmd_t*)(cmd))->v->undo = f; } while (0)
-//#define vvvv_cmd_set_free(cmd,f) do { ((vvvv_cmd_t*)(cmd))->v->free = f; } while (0)
+#define vvvv_cmd_get_dn(cmd) ((vvvv_cmd_t*)(cmd))->dn 
 
 #endif /* CMD_H */

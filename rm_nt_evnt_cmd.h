@@ -17,6 +17,6 @@ typedef struct vvvv_rm_nt_evnt_cmd_t {
 } vvvv_rm_nt_evnt_cmd_t;
 
 vvvv_rm_nt_evnt_cmd_t *
-vvvv_rm_nt_evnt_cmd_new(vvvv_nt_evnt_cmd_init_t *nci);
+vvvv_rm_nt_evnt_cmd_new(const vvvv_nt_evnt_cmd_init_t *nci);
 
 #endif /* RM_NT_EVNT_CMD_H */

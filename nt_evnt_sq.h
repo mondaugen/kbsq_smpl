@@ -22,10 +22,19 @@ typedef struct vvvv_nt_evnt_sq_init_t {
     size_t n_trks; /* Length as number of tracks ("vertical length") */
 } vvvv_nt_evnt_sq_init_t;
 
+typedef enum {
+    vvvv_nt_evnt_sq_fnd_flgs_TS_PCH,
+} vvvv_nt_evnt_sq_fnd_flgs_t;
+
 vvvv_nt_evnt_sq_t *vvvv_nt_evnt_sq_new(const vvvv_nt_evnt_sq_init_t *init);
 vvvv_err_t vvvv_nt_evnt_sq_insert(vvvv_nt_evnt_sq_t *nes,
                                   size_t trk,
                                   vvvv_nt_evnt_t *nev);
+vvvv_nt_evnt_t *
+vvvv_nt_evnt_sq_fnd(vvvv_nt_evnt_sq_t *nes,
+                     size_t trk,
+                     vvvv_nt_evnt_t *cnev,
+                     vvvv_nt_evnt_sq_fnd_flgs_t flgs);
 
 static inline vvvv_nt_evnt_lst_t * 
 vvvv_nt_evnt_sq_get_evnt_lst(vvvv_nt_evnt_sq_t *nes, size_t trk, size_t tck)
