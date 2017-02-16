@@ -1,3 +1,4 @@
+#include "test.h" 
 #include "rm_nt_evnt_cmd.h"
 #include "nt_evnt_sq.h" 
 #include "nt_evnt_cmd.h"
@@ -43,7 +44,7 @@ int vvvv_rm_nt_evnt_cmd_test(void)
             }
         },
         {
-            0,          // track
+            1,          // track
             nsq,        // sequence
             {
                 190,    // vvvv_tmstmp_t ts
@@ -63,11 +64,11 @@ int vvvv_rm_nt_evnt_cmd_test(void)
             }
         },
         {
-            0,          // track
+            1,          // track
             nsq,        // sequence
             {
                 180,    // vvvv_tmstmp_t ts
-                9,     // float pch
+                9,      // float pch
                 22,     // float vel
                 100     // vvvv_tmstmp_t dur
             }
@@ -87,15 +88,18 @@ int vvvv_rm_nt_evnt_cmd_test(void)
     vvvv_cmd_q_t *cmd_q = NULL;
     cmd_q = vvvv_cmd_q_new(2);
     E_ALLOC(cmd_q);
-    /* No note should be found, but command should be done */
+    VVVV_TEST_UNIT_START("No note should be found, but command should be done");
     vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)rm_cmds[0]);
     vvvv_cmd_q_redo_next_cmd(cmd_q);
     assert(vvvv_cmd_get_dn(rm_cmds[0]) == vvvv_cmd_done_TRUE);
     assert(rm_cmds[0]->fnd_nev == NULL);
-    /* Insert first note, then remove */
+    VVVV_TEST_UNIT_RESULT(1);
+    VVVV_TEST_UNIT_START("Insert first note, then remove");
     vvvv_cmd_q_undo_cur_cmd(cmd_q);
     assert(vvvv_cmd_get_dn(rm_cmds[0]) == vvvv_cmd_done_FALSE);
+    VVVV_TEST_UNIT_RESULT(1);
     {
+        VVVV_TEST_UNIT_START("Check can remove added event");
         vvvv_nt_evnt_t *tmp_nev = cmds[0]->nev;
         vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[0]);
         vvvv_cmd_q_redo_next_cmd(cmd_q);
@@ -111,7 +115,63 @@ int vvvv_rm_nt_evnt_cmd_test(void)
         assert(rm_cmds[0]->fnd_nev == tmp_nev);
         /* Also check event was actually removed */
         assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd) == NULL);
+        VVVV_TEST_UNIT_RESULT(1);
     }
+    {
+        VVVV_TEST_UNIT_START("Check that timestamp must match exactly");
+        vvvv_nt_evnt_t *tmp_nev = cmds[1]->nev;
+        vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[1]);
+        vvvv_cmd_q_redo_next_cmd(cmd_q);
+        /* Check inserted properly */
+        assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd)
+            == (MMDLList*)cmds[1]->nev);
+        /* Push removal command with same pitch and track, slightly different
+         * time stamp (same index in sequence) */
+        vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)rm_cmds[2]);
+        vvvv_cmd_q_redo_next_cmd(cmd_q);
+        /* Check that both were done */
+        assert(vvvv_cmd_get_dn(rm_cmds[2]) == vvvv_cmd_done_TRUE);
+        assert(vvvv_cmd_get_dn(cmds[1]) == vvvv_cmd_done_TRUE);
+        /* Check removed event is NULL (not found) */
+        assert(rm_cmds[2]->fnd_nev == NULL);
+        /* Check event is still there */
+        assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd) == (MMDLList*)tmp_nev);
+        VVVV_TEST_UNIT_RESULT(1);
+    }
+    {
+        VVVV_TEST_UNIT_START("Check that it works when there is more than 1 event at a time slot");
+        vvvv_nt_evnt_t *tmp_nev = cmds[4]->nev;
+        vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[4]);
+        vvvv_cmd_q_redo_next_cmd(cmd_q);
+        /* Check inserted properly */
+        assert(MMDLList_getNext(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd))
+            == (MMDLList*)cmds[4]->nev);
+        /* Push removal command with all the same paramters (should remove
+         * event) */
+        vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)rm_cmds[4]);
+        vvvv_cmd_q_redo_next_cmd(cmd_q);
+        /* Check that both were done */
+        assert(vvvv_cmd_get_dn(rm_cmds[4]) == vvvv_cmd_done_TRUE);
+        assert(vvvv_cmd_get_dn(cmds[4]) == vvvv_cmd_done_TRUE);
+        /* Check removed event is the one we want */
+        assert(rm_cmds[4]->fnd_nev == tmp_nev);
+        /* Check event removed */
+        assert(MMDLList_getNext(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd)) == NULL);
+        /* Check other event is still there */
+        assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd) == (MMDLList*)cmds[1]->nev);
+        /* Check that undoing the event puts it back in */
+        vvvv_cmd_q_undo_cur_cmd(cmd_q);
+        assert(MMDLList_getNext(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd))
+            == (MMDLList*)cmds[4]->nev);
+        /* Check that undoing the other event takes it out again */
+        vvvv_cmd_q_undo_cur_cmd(cmd_q);
+        /* Check event removed */
+        assert(MMDLList_getNext(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd)) == NULL);
+        /* Check other event is still there */
+        assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd) == (MMDLList*)cmds[1]->nev);
+        VVVV_TEST_UNIT_RESULT(1);
+    }
+
 
     return 0;
 }
