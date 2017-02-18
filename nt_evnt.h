@@ -28,5 +28,6 @@ vvvv_nt_evnt_t *vvvv_nt_evnt_new(const vvvv_nt_evnt_init_t *nei);
 void vvvv_nt_evnt_init(vvvv_nt_evnt_t *nev,
                        const vvvv_nt_evnt_init_t *nei);
 void vvvv_nt_evnt_free(vvvv_nt_evnt_t *nev);
+int vvvv_nt_evnt_cmp(vvvv_nt_evnt_t *a, vvvv_nt_evnt_t *b);
 
 #endif /* NT_EVNT_H */

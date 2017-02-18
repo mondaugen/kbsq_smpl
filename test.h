@@ -1,6 +1,8 @@
 #ifndef TEST_H
 #define TEST_H 
 
+#include <stdio.h> 
+
 #define VVVV_TEST_UNIT_START(str) \
    printf("Testing: %s\n",str)
 

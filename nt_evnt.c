@@ -88,3 +88,12 @@ void vvvv_nt_evnt_free(vvvv_nt_evnt_t *nev)
 {
     free(nev);
 }
+
+/* Returns 0 if all fields of both nt_evnt_t are the same, 1 otherwise. */
+int vvvv_nt_evnt_cmp(vvvv_nt_evnt_t *a, vvvv_nt_evnt_t *b)
+{
+    return  !((a->ts == b->ts)
+                && (a->pch == b->pch)
+                && (a->vel == b->vel)
+                && (a->dur == b->dur));
+}

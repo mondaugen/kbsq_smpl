@@ -3,7 +3,12 @@
 
 /* Parses commands that yield note events */
 
+#include "cmd_q.h" 
+#include "nt_evnt_sq.h" 
 #include "cmd_prsr.h"
+#include "err.h" 
+#include "tmstmp.h"
+#include "nt_evnt_cmd.h" 
 
 #define NT_EVNT_CMD_PRSR_CMD_TOK "note" 
 #define NT_EVNT_CMD_PRSR_DFLT_DUR 24 // TODO: Update this to be the length of one beat in the sequence
@@ -15,17 +20,17 @@
 typedef struct vvvv_nt_evnt_cmd_prsr_t {
     vvvv_cmd_prsr_t super;
     /* The sequence the note events are placed in */
-    vvvv_nt_evnt_sq_t *nes;
+    vvvv_nt_evnt_sq_t **nes;
     /* The command queue the note event commands are placed in */
-    vvvv_cmd_q_t *cq;
+    vvvv_cmd_q_t **cq;
 } vvvv_nt_evnt_cmd_prsr_t;
 
 typedef struct vvvv_nt_evnt_cmd_prsr_init_t {
-    vvvv_nt_evnt_sq_t *nes;
-    vvvv_cmd_q_t *cq;
+    vvvv_nt_evnt_sq_t **nes;
+    vvvv_cmd_q_t **cq;
 } vvvv_nt_evnt_cmd_prsr_init_t;
 
 void vvvv_nt_evnt_cmd_prsr_init(vvvv_nt_evnt_cmd_prsr_t *necp,
-                                  vvvv_nt_evnt_cmd_prsr_init_t *necpi);
+                                vvvv_nt_evnt_cmd_prsr_init_t *necpi);
 
 #endif /* NT_EVNT_CMD_PRSR_H */
