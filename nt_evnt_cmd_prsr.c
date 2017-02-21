@@ -20,7 +20,7 @@ static vvvv_err_t prs_args(vvvv_cmd_prsr_t *cp, char *str)
         nargs_prsd = sscanf(str,
                             "%lu "
                                 VVVV_TMSTMP_SCANF_STR
-                                "%f %f "
+                                " %f %f "
                                 VVVV_TMSTMP_SCANF_STR,
                             &neci.trk,
                             &neci.nei.ts,
@@ -65,7 +65,7 @@ void vvvv_nt_evnt_cmd_prsr_init(vvvv_nt_evnt_cmd_prsr_t *necp,
     }
     vvvv_cmd_prsr_t *cp = (vvvv_cmd_prsr_t*)necp;
     cp->v = nt_evnt_cmd_prsr_vtab_ptr;
-    cp->cmd_tkn = NT_EVNT_CMD_PRSR_CMD_TOK;
+    cp->cmd_tkn = NT_EVNT_CMD_PRSR_TOK;
     necp->nes = necpi->nes;
     necp->cq  = necpi->cq;
 }

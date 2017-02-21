@@ -1,6 +1,7 @@
 #include "cmd_q.h"
 #include <stdlib.h> 
 
+
 /* Removes the first command in the queue if it is not NULL.
  * The event is not freed (must be freed by the caller if it wants).
  */
@@ -104,4 +105,18 @@ vvvv_cmd_q_new(size_t len)
         ret->lst_dn_idx = 1;
     }
     return ret;
+}
+
+void vvvv_cmd_q_free(vvvv_cmd_q_t *cmdq)
+{
+    /* Free all commands remaining in cmd_q */
+    size_t i = (cmdq->cur_end_idx + 2) * cmdq->len;
+    while (i != (cmdq->cur_end_idx + 1)) {
+        if (cmdq->cmds[i]) {
+            vvvv_cmd_free(cmdq->cmds[i]);
+            cmdq->cmds[i] = NULL;
+        }
+        i = (i + 1) % cmdq->len;
+    }
+    free(cmdq);
 }

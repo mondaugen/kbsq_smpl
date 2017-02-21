@@ -50,6 +50,14 @@ vvvv_nt_evnt_sq_t *vvvv_nt_evnt_sq_new(const vvvv_nt_evnt_sq_init_t *init)
     return ret;
 }
 
+/* This doesn't free the underlying events! To do so, get all the note events in
+ * the range of the entire sequence and free each one (see vvvv_nt_evnt_sq_mp).
+ * After that you can call vvvv_nt_evnt_sq_free. */
+void vvvv_nt_evnt_sq_free(vvvv_nt_evnt_sq_t *nes)
+{
+    free(nes);
+}
+
 /* Insert an event on track trk */
 vvvv_err_t vvvv_nt_evnt_sq_insert(vvvv_nt_evnt_sq_t *nes,
                                   size_t trk,
@@ -72,7 +80,8 @@ vvvv_err_t vvvv_nt_evnt_sq_insert(vvvv_nt_evnt_sq_t *nes,
 
 /* Iterate over note events in range and call fun on the events.
  * Data is passed as the last argument to fun.
- * It is an error to have ts1 < ts0 or pch1 > pch0
+ * It is an error to have ts1 < ts0 or pch1 > pch0. In this case the function
+ * simply returns without doing anything.
  */
 static void vvvv_nt_evnt_sq_mp(vvvv_nt_evnt_sq_t *nes,
                                vvvv_nt_evnt_sq_rng_t *nesr,
@@ -92,8 +101,12 @@ static void vvvv_nt_evnt_sq_mp(vvvv_nt_evnt_sq_t *nes,
             vvvv_nt_evnt_lst_t *nel;
             nel = vvvv_nt_evnt_sq_get_evnt_lst(nes, nesr->trk, i);
             if (nel) {
-                vvvv_nt_evnt_t *ptr = (vvvv_nt_evnt_t*)&nel->lst_hd;
-                while ((ptr = (vvvv_nt_evnt_t*)MMDLList_getNext(ptr))) {
+                vvvv_nt_evnt_t *ptr = (vvvv_nt_evnt_t*)&nel->lst_hd, *nxt_ptr;
+                ptr = (vvvv_nt_evnt_t*)MMDLList_getNext(ptr);
+                while (ptr) {
+                    /* Done this way so that if func frees ptr, we still have a
+                     * reference to the next item in the list */
+                    nxt_ptr = (vvvv_nt_evnt_t*)MMDLList_getNext(ptr);
                     if ((ptr->pch >= nesr->pch0)
                             && (ptr->pch < nesr->pch1)
                             && (ptr->ts >= nesr->ts0)
@@ -104,6 +117,7 @@ static void vvvv_nt_evnt_sq_mp(vvvv_nt_evnt_sq_t *nes,
                          * duration. */
                         func(nes,ptr,data);
                     }
+                    ptr = nxt_ptr;
                 }
             }
         }

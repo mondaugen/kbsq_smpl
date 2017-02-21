@@ -10,7 +10,7 @@
 #include "tmstmp.h"
 #include "nt_evnt_cmd.h" 
 
-#define NT_EVNT_CMD_PRSR_CMD_TOK "note" 
+#define NT_EVNT_CMD_PRSR_TOK "note" 
 #define NT_EVNT_CMD_PRSR_DFLT_DUR 24 // TODO: Update this to be the length of one beat in the sequence
 #define NT_EVNT_CMD_PRSR_DFLT_VEL 1
 #define NT_EVNT_CMD_PRSR_DFLT_PCH 60.

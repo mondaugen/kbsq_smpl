@@ -1,6 +1,6 @@
 #/bin/bash
 
-bin=nt_evnt_cmd_prsr_test.bin;
+bin=cmd_prsr_test.bin;
 
 rm $bin;
 
@@ -17,9 +17,12 @@ nt_evnt_cmd_prsr_test.c \
 nt_evnt_lst.c \
 nt_evnt_sq.c \
 rm_nt_evnt_cmd.c \
+rm_nt_evnt_cmd_prsr.c \
+undo_cmd_prsr.c \
+redo_cmd_prsr.c \
 -o $bin \
 -I. \
 -g \
 ;
 
-./nt_evnt_cmd_prsr_test.bin;
+./cmd_prsr_test.bin;

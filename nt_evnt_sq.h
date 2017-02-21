@@ -27,6 +27,7 @@ typedef enum {
 } vvvv_nt_evnt_sq_fnd_flgs_t;
 
 vvvv_nt_evnt_sq_t *vvvv_nt_evnt_sq_new(const vvvv_nt_evnt_sq_init_t *init);
+void vvvv_nt_evnt_sq_free(vvvv_nt_evnt_sq_t *nes);
 vvvv_err_t vvvv_nt_evnt_sq_insert(vvvv_nt_evnt_sq_t *nes,
                                   size_t trk,
                                   vvvv_nt_evnt_t *nev);

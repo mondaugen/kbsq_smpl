@@ -1,4 +1,5 @@
 #include "rm_nt_evnt_cmd.h"
+#include <stdlib.h> 
 
 static vvvv_cmd_vtab_t rm_nt_evnt_cmd_vtab;
 static vvvv_cmd_vtab_t *rm_nt_evnt_cmd_vtab_ptr = 0;
