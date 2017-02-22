@@ -13,6 +13,17 @@ typedef struct vvvv_cmd_q_t {
     size_t cur_end_idx; 
     /* The index of the last command that was executed. */
     size_t lst_dn_idx;
+    /* The current "time" in history. */
+    size_t cur_tag_time;
+    /* The index of the first tag <= cur_tag_time. This value signed because the
+     * current time could be less than the time of the first tag. In this case
+     * this index will be -1. */
+    long int cur_tag_idx;
+    /* The current length of the tag list. Its maximum length is len, the same
+     * as the command queue */
+    size_t cur_tags_len;
+    /* An array of tagged undo points in history */
+    size_t *tags;
     vvvv_cmd_t *cmds[];
 } vvvv_cmd_q_t;
 
