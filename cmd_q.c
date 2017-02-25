@@ -207,9 +207,13 @@ vvvv_cmd_q_new(size_t len)
         ret->len = len + 1;
         ret->cur_end_idx = 0;
         ret->lst_dn_idx = 1;
-        ret->cur_tag_time = 0;
-        ret->cur_tag_idx = -1;
-        ret->cur_tags_len = 0;
+        ret->tq.len = len;
+        ret->tq.cur_len = 0;
+        ret->tq.pop_index = 0;
+        ret->tq.push_index = 0;
+        ret->tq.cur_tag_idx = 0;
+        ret->tq.cur_tag_time = 0;
+        ret->tq.tags = tags;
     }
     return ret;
 }

@@ -4,6 +4,23 @@
 #include <stddef.h>
 #include "cmd.h" 
 
+typedef struct vvvv_cmd_tag_q_t {
+    size_t len;
+    /* The current length of the tag list. Its maximum length is len. */
+    size_t cur_len;
+    /* The index of the oldest item pushed onto the queue that has not yet been
+     * popped. */
+    size_t pop_index;
+    /* The index where the next item to be pushed onto the queue will be pushed.
+     * */
+    size_t push_index;
+    /* The index of the first tag <= cur_tag_time */
+    long int cur_tag_idx;
+    /* The current "time" in history. */
+    size_t cur_tag_time;
+    size_t *tags;
+} vvvv_cmd_tag_q_t;
+
 typedef struct vvvv_cmd_q_t {
     /* Physical length. The queue actually can only contain one less item than
      * this because there is one sentinel element. */
@@ -13,17 +30,7 @@ typedef struct vvvv_cmd_q_t {
     size_t cur_end_idx; 
     /* The index of the last command that was executed. */
     size_t lst_dn_idx;
-    /* The current "time" in history. */
-    size_t cur_tag_time;
-    /* The index of the first tag <= cur_tag_time. This value signed because the
-     * current time could be less than the time of the first tag. In this case
-     * this index will be -1. */
-    long int cur_tag_idx;
-    /* The current length of the tag list. Its maximum length is len, the same
-     * as the command queue */
-    size_t cur_tags_len;
-    /* An array of tagged undo points in history */
-    size_t *tags;
+    vvvv_cmd_tag_q_t tq;
     vvvv_cmd_t *cmds[];
 } vvvv_cmd_q_t;
 
