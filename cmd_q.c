@@ -140,6 +140,14 @@ static void cmd_q_advance_tag_time(vvvv_cmd_q_t *cmdq, int dir)
             return;
         }
         cmdq->tq.cur_tag_time++;
+        while ((cmdq->tq.cur_len > 0) && ((cmdq->tq.cur_tag_time 
+                    - cmdq->tq.tags[cmdq->tq.pop_index]) 
+                > cmdq->len)) {
+            /* Remove all tags so old that not enough undos can be stored to
+             * undo to them */
+            size_t discard;
+            (void) cmd_tag_q_pop(&cmdq->tq,&discard);
+        }
         if ((cmdq->tq.cur_len == 0) || (cmdq->tq.prev_tag_idx
                 == CMD_TAG_Q_PREV_IDX(cmdq,cmdq->tq.push_index))) {
             /* If there are no tags in the tag queue or the previous tag index
