@@ -15,6 +15,7 @@ rm_nt_evnt_cmd_test.c \
 nt_evnt_lst.c \
 nt_evnt_sq.c \
 rm_nt_evnt_cmd.c \
+err.c \
 -o $bin \
 -I. \
 -g \

@@ -15,7 +15,7 @@ typedef struct vvvv_cmd_tag_q_t {
      * */
     size_t push_index;
     /* The index of the first tag <= cur_tag_time */
-    long int cur_tag_idx;
+    long int prev_tag_idx;
     /* The current "time" in history. */
     size_t cur_tag_time;
     size_t *tags;

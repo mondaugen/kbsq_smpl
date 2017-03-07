@@ -89,7 +89,7 @@ int vvvv_rm_nt_evnt_cmd_test(void)
     cmd_q = vvvv_cmd_q_new(2);
     E_ALLOC(cmd_q);
     VVVV_TEST_UNIT_START("No note should be found, but command should be done");
-    vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)rm_cmds[0]);
+    assert(vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)rm_cmds[0]) == NULL);
     vvvv_cmd_q_redo_next_cmd(cmd_q);
     assert(vvvv_cmd_get_dn(rm_cmds[0]) == vvvv_cmd_done_TRUE);
     assert(rm_cmds[0]->fnd_nev == NULL);
@@ -101,12 +101,12 @@ int vvvv_rm_nt_evnt_cmd_test(void)
     {
         VVVV_TEST_UNIT_START("Check can remove added event");
         vvvv_nt_evnt_t *tmp_nev = cmds[0]->nev;
-        vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[0]);
+        assert(vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[0]) == NULL);
         vvvv_cmd_q_redo_next_cmd(cmd_q);
         /* Check inserted properly */
         assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,0,1)->lst_hd)
             == (MMDLList*)cmds[0]->nev);
-        vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)rm_cmds[0]);
+        assert(vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)rm_cmds[0]) == NULL);
         vvvv_cmd_q_redo_next_cmd(cmd_q);
         /* Check that both were done */
         assert(vvvv_cmd_get_dn(rm_cmds[0]) == vvvv_cmd_done_TRUE);
@@ -120,14 +120,14 @@ int vvvv_rm_nt_evnt_cmd_test(void)
     {
         VVVV_TEST_UNIT_START("Check that timestamp must match exactly");
         vvvv_nt_evnt_t *tmp_nev = cmds[1]->nev;
-        vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[1]);
+        assert(vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[1]) == (vvvv_cmd_t*)cmds[0]);
         vvvv_cmd_q_redo_next_cmd(cmd_q);
         /* Check inserted properly */
         assert(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd)
             == (MMDLList*)cmds[1]->nev);
         /* Push removal command with same pitch and track, slightly different
          * time stamp (same index in sequence) */
-        vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)rm_cmds[2]);
+        assert(vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)rm_cmds[2]) == (vvvv_cmd_t*)rm_cmds[0]);
         vvvv_cmd_q_redo_next_cmd(cmd_q);
         /* Check that both were done */
         assert(vvvv_cmd_get_dn(rm_cmds[2]) == vvvv_cmd_done_TRUE);
@@ -141,14 +141,14 @@ int vvvv_rm_nt_evnt_cmd_test(void)
     {
         VVVV_TEST_UNIT_START("Check that it works when there is more than 1 event at a time slot");
         vvvv_nt_evnt_t *tmp_nev = cmds[4]->nev;
-        vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[4]);
+        assert(vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)cmds[4]) == (vvvv_cmd_t*)cmds[1]);
         vvvv_cmd_q_redo_next_cmd(cmd_q);
         /* Check inserted properly */
         assert(MMDLList_getNext(MMDLList_getNext(&vvvv_nt_evnt_sq_get_evnt_lst(nsq,1,1)->lst_hd))
             == (MMDLList*)cmds[4]->nev);
         /* Push removal command with all the same paramters (should remove
          * event) */
-        vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)rm_cmds[4]);
+        assert(vvvv_cmd_q_push_cmd(cmd_q,(vvvv_cmd_t*)rm_cmds[4]) == (vvvv_cmd_t*)rm_cmds[2]);
         vvvv_cmd_q_redo_next_cmd(cmd_q);
         /* Check that both were done */
         assert(vvvv_cmd_get_dn(rm_cmds[4]) == vvvv_cmd_done_TRUE);
